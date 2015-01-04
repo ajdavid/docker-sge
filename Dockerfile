@@ -41,6 +41,7 @@ ADD sge_auto_install.conf /root/sge_auto_install.conf
 ADD docker_sge_init.sh /etc/my_init.d/01_docker_sge_init.sh
 ADD sge_exec_host.conf /root/sge_exec_host.conf
 ADD sge_queue.conf /root/sge_queue.conf
+ADD sge_hostgrp.conf /root/sge_hostgrp.conf
 RUN chmod ug+x /etc/my_init.d/01_docker_sge_init.sh
 
 # change to home directory
@@ -93,6 +94,7 @@ RUN echo Y | ./scripts/distinst -local -allall -libs -noexit
 WORKDIR $SGE_ROOT
 RUN ./inst_sge -m -x -s -auto ~/sge_auto_install.conf \
 && /etc/my_init.d/01_docker_sge_init.sh && sed -i "s/HOSTNAME/`hostname`/" $HOME/sge_exec_host.conf \
+&& sed -i "s/HOSTNAME/`hostname`/" $HOME/sge_hostgrp.conf\
 && /opt/sge/bin/lx-amd64/qconf -au sgeadmin arusers \
 && /opt/sge/bin/lx-amd64/qconf -Me $HOME/sge_exec_host.conf \
 && /opt/sge/bin/lx-amd64/qconf -Aq $HOME/sge_queue.conf
